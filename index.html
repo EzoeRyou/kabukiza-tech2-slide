@@ -1,0 +1,1707 @@
+<!doctype html>
+<html>
+
+<head>
+<title>
+C++14の新機能
+</title>
+
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+</head>
+
+<body>
+<div class="reveal">
+<div class="slides">
+
+<section>
+
+    <section>
+<h1>C++14の新機能</h1>
+
+<p>
+江添亮<br />
+<a href="http://cpplover.blogspot.jp/">http://cpplover.blogspot.jp/</a><br />
+boostcpp@gmail.com<br />
+<a href="https://twitter.com/EzoeRyou">@EzoeRyou</a>
+</p>
+
+<p>
+GFDL 1.3 with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+</p>
+    </section>
+
+    <section id="themes" >
+					<h2>Themes</h2>
+					<p>
+
+						<a href="?theme=sky#/themes">Sky</a> -
+						<a href="?theme=beige#/themes">Beige</a> -
+						<a href="?theme=simple#/themes">Simple</a> -
+						<a href="?theme=serif#/themes">Serif</a> -
+						<a href="?theme=night#/themes">Night</a> -
+						<a href="?#/themes">Default</a>
+					</p>
+    </section>
+
+    <section id="transitions">
+        <h2>Transition Styles</h2>
+        <p>
+
+            <a href="?transition=cube#/transitions">Cube</a> -
+            <a href="?transition=page#/transitions">Page</a> -
+            <a href="?transition=concave#/transitions">Concave</a> -
+            <a href="?transition=zoom#/transitions">Zoom</a> -
+            <a href="?transition=linear#/transitions">Linear</a> -
+            <a href="?transition=fade#/transitions">Fade</a> -
+            <a href="?transition=none#/transitions">None</a> -
+            <a href="?#/transitions">Default</a>
+        </p>
+    </section>
+
+</section>
+
+<section>
+<h1>注意</h1>
+
+<p>
+これは2013年5月15日に発行されたC++のドラフト規格に基づく
+</p>
+
+<p>
+正式に制定され発行されたISO規格ではない
+</p>
+
+<p>
+まだ文法や機能は変わりうるものと心得よ
+</p>
+
+</section>
+
+<section id="binary-literal">
+<h1>二進数リテラル</h1>
+
+<blockquote>
+<p>
+ヤレ由良助待兼たはやい
+</p>
+
+<p>
+塩冶判官
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+2進法以外は使えねーし使わねー
+</p>
+
+<p>
+匿名希望さん
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>二進数リテラル</h3>
+
+<p>
+待ちかねた二進数の整数リテラルがC++に追加
+</p>
+
+<pre><code data-trim="data-trim" class="cpp" >
+int x = 0b10 ; // 2
+int y = 0B10101010 ; // 170
+int z = 0b10011100 + 0b1111 - 0b1 ;
+</code></pre>
+</section>
+
+<section>
+<h3>整数のリテラル</h3>
+
+<p>
+二進数リテラルは浮動小数点数には使えない
+</p>
+
+<pre><code data-trim="data-trim" class="cpp" >
+0b1.1 ; // エラー
+</code></pre>
+</section>
+
+<section>
+<h3>先例</h3>
+
+<p>
+すでに独自拡張として、GCC, Clang, Digital Mars C++で実装
+</p>
+
+<p>
+Java 7、Python、Dでも、同じ文法で提供
+</p>
+
+<p>
+下位互換性の問題もない
+</p>
+</section>
+
+<section id="digit-separator">
+<h1>数値区切り</h1>
+
+<blockquote>
+<p>
+気にいらん
+</p>
+
+<p>
+江添亮
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>数値区切りとは？</h3>
+
+<p>
+数値リテラルを区切ることができる機能
+</p>
+
+<p>
+単一引用符で区切る
+</p>
+
+<p>
+区切りの桁は任意
+</p>
+</section>
+
+<section>
+<h3>利用例その一</h3>
+
+<p>
+大きな数字を分かりやすくするため区切る
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+int a = 1'0000 ; // 1万
+int b = 1'0000'0000 ; // 1億
+long long int c = 1'0000'0000'0000 ; // 1兆
+</code></pre>
+</section>
+
+<section>
+<h3>利用例そのニ</h3>
+
+<p>
+8bit単位で区切る
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+std::uint16_t a = 0b10101010'11110000 ;
+std::uint32_t b = 0b11111111'00000000'11111111'00000000 ;
+std::uint64_t c = 0xde'ad'be'ef'de'ad'be'ef ;
+</code></pre>
+</section>
+
+<section>
+<h3>利用例その三</h3>
+
+<p>
+小数点以下を区切る
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+double pi = 3.14159'26535'89793'23846 ;
+</code></pre>
+</section>
+
+<section>
+<h3>文法</h3>
+
+<p>
+歴史ある数値リテラルを変えるのは難しい
+</p>
+
+<p>
+多くの記号が、既存の文法と曖昧になる
+</p>
+
+<p>
+実に様々な文法が考慮された
+</p>
+
+<p>
+最終的に、区切り文字は単一引用符に決定
+</p>
+</section>
+
+<section>
+<h3>望まれた機能</h3>
+
+<p>
+ドラフト入りしたのは2013年9月のシカゴ会議
+</p>
+
+<p>
+2013年4月のブリストル会議では却下
+</p>
+
+<p>
+CDに入らず
+</p>
+
+<p>
+「必要だ。絶対入れろ」と各国支部からの強いNBコメント
+</p>
+
+
+<p>
+さすがに圧力を無視できずに入った
+</p>
+
+<p>
+もう少し議論を深めたほうがよかったかも
+</p>
+
+</section>
+
+
+<section id="runtime-sized-array">
+<h1>実行時サイズ配列</h1>
+
+<blockquote>
+<p>
+'variable length array in structure' extension will never be supported
+</p>
+
+<p>
+Clang、GCCの独自拡張VLAISについて
+</p>
+</blockquote>
+
+</section>
+
+<section>
+<h3>実行時サイズ配列とは</h3>
+
+<p>
+静的ストレージ上に確保される動的な長さの配列
+</p>
+
+<p>
+規格上は動的ストレージ上に確保されることも許容される
+</p>
+</section>
+
+<section>
+<h3>利用例</h3>
+
+<p>
+配列の長さを実行時に指定できる
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+void f( std::size_t size )
+{
+    char a[size] ; // OK
+}
+</code></pre>
+</section>
+
+<section>
+<h3>クラス内では使えない</h3>
+
+<p>
+GCCの独自拡張は、構造体内で動的配列を宣言できる
+</p>
+
+<p>
+通称、構造体内での動的配列
+</p>
+
+<p>
+Variable Length Array In Structure(VLAIS)
+</p>
+
+<p>
+C++14の実行時サイズ配列はVLAISをサポートしない
+</p>
+
+</section>
+
+<section>
+<h3>VLAISの例</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+void f( std::size_t size )
+{
+    struct
+    {
+        // GCCの独自拡張VLAIS
+        // C++14ではエラー
+        char buf[size] ;
+    } vlais ;
+}
+</code></pre>
+</section>
+
+<section>
+<h3>C99とは違う</h3>
+
+<p>
+C++14は実行時サイズ配列
+</p>
+
+<p>
+C99は可変長配列
+</p>
+
+<p>
+違いがある
+</p>
+
+<p>
+たとえば、sizeofはサポートしない
+</p>
+</section>
+
+<section>
+<h3>何故必要なのか</h3>
+
+<p>
+みんな配列を使いたがる
+</p>
+<p>
+ライブラリベースの実装では納得しない
+</p>
+</section>
+
+<section>
+<h3>ライブラリでの実装</h3>
+
+<p>
+C++14では、ライブラリによる同等機能のdynarrayも入る
+</p>
+
+<p>
+詳細は論文<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3662.html">N3662</a>などで熟知すべし
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+#include &lt;dynarray&gt;
+
+void f( std::size_t size )
+{
+    std::dynarray&lt;char&gt; a(size) ;
+}
+</code></pre>
+</section>
+
+<section id="deprecated">
+<h1>[[deprecated]]</h1>
+
+<blockquote>
+<p>
+(σ・∀・)σ gets() !
+</p>
+
+<p>
+ダンディ坂野
+</p>
+
+</blockquote>
+
+<blockquote>
+<p>
+Never use gets().
+</p>
+
+<p>
+man 3 gets(GNU libc)
+</p>
+</blockquote>
+</section>
+
+
+<section>
+<h3>[[deprecated]]とは？</h3>
+
+<p>
+deprecated属性とは、エンティティである名前を非推奨扱いにする属性
+</p>
+
+<p>
+これにより、非推奨扱いの名前を非推奨であるとマークできる
+</p>
+
+<p>
+実装は、deprecatedな名前が使われた場合、警告メッセージを出せる
+</p>
+</section>
+
+<section>
+<h3>使用例</h3>
+
+<pre><code data-trim="data-trim" class="cpp" >
+// 非推奨の名前に対し使用
+[[deprecated]] char * gets ( char * str );
+// コメントも使える
+[[deprecated("auto_ptr is deprecated."
+             " Use unique_ptr instead.")]]
+template &lt; typename X &gt;
+class auto_ptr ;
+</code></pre>
+</section>
+
+<section>
+<h3>なぜ必要なのか？</h3>
+
+<p>
+一度決めた名前の挙動を変えるのは難しい
+</p>
+
+<p>
+たとえその挙動が、悲惨なものであったとしても
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+#include &lt;cstdio&gt;
+
+int main()
+{
+    char buf[256] ;
+    std::gets( buf ) ; // ダメ。ゼッタイ。
+}
+</code></pre>
+
+</section>
+
+<section>
+<h3>なぜ既存の名前の挙動を変えられないのか？</h3>
+
+<p>
+既存の名前の挙動を変えると、互換性が壊れる
+</p>
+
+</section>
+
+<section>
+<h3>現実的な対応</h3>
+
+<ul>
+<li>
+まともな挙動をする新しい名前を提供する
+</li>
+<li>
+互換性のために、しばらくの間、昔の名前と挙動も残す
+</li>
+</ul>
+
+
+<pre><code data-trim="data-trim" class="cpp" >
+char * checked_gets( char * str, std::size_t size )
+{
+    return std::fgets( str, size, std::stdin ) ;
+}
+</code></pre>
+
+<p>
+しかし、既存のコードはどうする？
+</p>
+</section>
+
+<section>
+<h3>非推奨のマーク</h3>
+
+<p>
+昔の非推奨の名前を、非推奨であるとマークする
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+[[deprecated("gets is deprecated."
+             " Use checked_gets instead.")]]
+char * gets ( char * str ) ;
+</code></pre>
+
+<p>
+これにより、コンパイラーは非推奨の名前が使われた場合、警告できる
+</p>
+</section>
+
+<section>
+<h3>先例</h3>
+
+<p>
+[[deprecated]]の同等機能は、既存のC++実装で独自拡張として提供されている
+</p>
+
+<p>
+GCC, Clang, MSVC, Embarcadero
+</p>
+
+<p>
+どの独自拡張も、単に属性の文法が違うだけで、機能的には変わらない
+</p>
+</section>
+
+<section id="return-type-deduction">
+<h1>戻り値の型推定</h1>
+
+<blockquote>
+<p>
+If the return type is omitted, int is assumed.
+</p>
+
+<p>
+The C programming Language(1978)<br />
+By Brian W. Kernighan and Dennis M. Ritchie.
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>戻り値の型推定</h3>
+
+<p>
+関数宣言の戻り値の型を、return文のオペランドの式から推定する機能
+</p>
+</section>
+
+<section>
+<h3>使い方</h3>
+
+<p>
+新しい関数記法で、戻り値の型を省略するだけ
+</p>
+
+<pre><code data-trim="data-trim" class="cpp" >
+auto f() { return 0 ; } // int
+
+auto g() ; // 前方宣言できる
+auto g() { return 0.0 ; } // double
+
+auto g() -&gt; int ; // エラー、異なる関数の宣言
+</code></pre>
+</section>
+
+<section>
+<h3>K&amp;R Cとの違い</h3>
+<p>
+K&amp;R Cでは、関数の戻り値の型を省略すると、暗黙にint型になった
+</p>
+
+<pre><code data-trim="data-trim" class="cpp" >
+f() { return 0.0 ; } // int
+</code></pre>
+
+<p>
+C++14の戻り値の型推定機能は、小汚いK&amp;R Cとは違う
+</p>
+
+<p>
+関数本体のreturn文のオペランドの式を評価した結果の型になる
+</p>
+</section>
+
+<section>
+<h3>return文</h3>
+
+<p>
+型が一致していれば、複数のreturn文があってもよい
+</p>
+
+<pre><code data-trim="data-trim" class="cpp" >
+auto f( bool b )
+{
+    if ( b )
+        return 1 ; // int
+    else
+        return 2 ; // これもint
+}
+</code></pre>
+</section>
+
+<section>
+<h3>再帰</h3>
+
+<p>
+戻り値の型推定は、再帰関数にも、もちろん使える
+</p>
+<p>
+return文の型さえ一致していればよい
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+unsigned ackermann( unsigned m, unsigned n )
+{
+    if ( m == 0u )
+        return n + 1u ;
+    else if ( n == 0u )
+        return ackermann( m - 1u, 1u ) ;
+    else
+        return ackermann( m - 1u, ackermann( m, n - 1u ) ) ;
+}
+</code></pre>
+</section>
+
+<section>
+<h3>何故必要なのか</h3>
+<p>
+型名の具体的な記述は、時として、とても面倒になる
+</p>
+
+<p>
+特に、テンプレートが絡むと、とてつもなく面倒になる
+</p>
+</section>
+
+<section>
+<h3>面倒な型名</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename X, typename Y &gt;
+auto f ( X x, Y y ) -&gt; decltype( x + y )
+{
+    return x + y ;
+}
+</code></pre>
+
+<p>
+同じ記述が重複している
+</p>
+
+<p>
+現実のコードでは、重複部分はもっと長く冗長で複雑になる
+</p>
+</section>
+
+<section>
+<h3>decltype(auto)</h3>
+<p>
+戻り値の型推定のために追加された機能にdecltype(auto)というものがある
+</p>
+
+<p>
+時間がないので省略
+</p>
+
+<p>
+詳細は論文<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3638">N3638</a>
+などで熟知すべし
+</p>
+</section>
+
+<section id="variable-template">
+<h1>変数テンプレート</h1>
+
+<blockquote>
+<p>
+円周率は定数である
+</p>
+
+<p>
+円周率は必要に応じて変更できる
+</p>
+
+<p>
+XeroxのFortranマニュアル
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+円積問題を肯定的に解決した
+</p>
+
+<p>
+ゆえに、円周率は3.2などである
+</p>
+
+<p>
+インディアナ州議会
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>変数テンプレートとは</h3>
+
+<p>
+変数宣言をテンプレート宣言できる機能
+</p>
+</section>
+
+<section>
+<h3>使い方</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+// valueの型はテンプレートパラメーターT
+template &lt; typename T &gt;
+T value ;
+
+value&lt;int&gt; = 0 ;
+value&lt;double&gt; = 0.0 ;
+</code></pre>
+</section>
+
+<section>
+<h3>何故必要なのか</h3>
+
+<p>
+プログラミングの世界では、定数に名前をつけるのは良い習慣であるとされている
+</p>
+
+<p>
+もし、ある定数が複数の型で表現できる場合、どのような名前をつければいいのか
+</p>
+</section>
+
+<section>
+<h3>問題</h3>
+
+<p>
+円周率に名前をつけよ
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename Radius &gt;
+auto calc_circle_area( Radius const &amp; radius )
+{
+    return pi * radius * radius ;
+}
+</code></pre>
+
+<p>
+名前piは、どのように定義したらいいのか
+</p>
+
+<p>
+Radiusには、任意の数値型や、数値のようにふるまうクラス型が使われる
+</p>
+</section>
+
+<section>
+<h3>ひとつの型を使う方法</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+constexpr double pi = 3.1415 ;
+</code></pre>
+
+<ul>
+<li>あらゆる数値型はdouble型と互換性があるに違いない</li>
+<li>piの精度を型に応じて変えることができない</li>
+</ul>
+
+</section>
+
+<section>
+<h3>複数の型を使う方法</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+constexpr int pi_i = 3 ;
+
+constexpr float pi_f = 3.1415 ;
+
+constexpr double pi_d = 3.141592 ;
+</code></pre>
+
+
+<p>
+使い分けが面倒
+</p>
+
+</section>
+
+<section>
+<h3>関数テンプレートを使う方法</h3>
+
+<p>
+任意の型に対応できる
+</p>
+
+<p>
+問題解決か？
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T &gt;
+constexpr T pi( )
+{ return static_cast&lt;T&gt;(3.1415) ; }
+
+// 明示的特殊化
+// big_realは独自の精度の高い実数クラス型
+template &lt; &gt;
+big_real pi&lt;big_real&gt;()
+{ return big_real("3.14159265358979323846") ; }
+</code></pre>
+
+</section>
+
+<section>
+<h3>関数テンプレートの問題点</h3>
+
+<p>
+冗長な文法
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename Radius &gt;
+auto calc_circle_area( Radius const &amp; radius )
+{
+    return pi&lt;Radius&gt;() * radius * radius ;
+}
+</code></pre>
+
+<p>
+関数のため、関数呼び出し式()が必要
+</p>
+
+</section>
+
+<section>
+<h3>プログラマー != 数学者</h3>
+<p>
+「定数は無引数関数で表すことができる」
+</p>
+
+<p>
+数学的には正しい
+</p>
+
+<p>
+ただし、プログラマーは数学者ではない
+</p>
+
+<p>
+プログラマーは冗長な文法を嫌う
+</p>
+</section>
+
+<section>
+<h3>解決方法</h3>
+<p>
+いっそのこと、変数をテンプレート宣言できるようにしてしまえばいい
+</p>
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T &gt;
+constexpr T pi = static_cast&lt;T&gt;(3.1415) ;
+
+// 明示的特殊化
+template &lt; &gt;
+big_real pi&lt;big_real&gt;("3.14159265358979323846") ;
+</code></pre>
+</section>
+
+<section>
+<h3>解決方法</h3>
+
+<p>
+関数呼び出し式を書かずにすむ
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename Radius &gt;
+auto calc_circle_area( Radius const &amp; radius )
+{
+    return pi&lt;Radius&gt; * radius * radius ;
+}
+</code></pre>
+
+</section>
+
+<section>
+<h3>応用</h3>
+
+<p>
+値を返すメタ関数にも使える
+</p>
+
+<p>
+冗長な::valueを書く必要がない
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T, typename U &gt;
+constexpr bool is_same_v = std::is_same&lt;T, U&gt;::value ;
+
+constexpr bool b = is_same_v&lt; int, int &gt; ;
+</code></pre>
+</section>
+
+<section id="generic-lambda">
+<h1>ジェネリックlambda式</h1>
+
+<blockquote>
+<p>
+惣じて二つ有物を陰陽に取、兄弟に象る
+</p>
+
+<p>
+義経千本桜
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>ジェネリックlambda式とは？</h3>
+
+<p>
+ポリモーフィックlambda式、多相lambda式とも呼ばれる機能
+</p>
+
+<p>
+クールな説明
+</p>
+
+<p>
+lambdaのパラメーターのタイプをパラメタライズドする
+</p>
+
+<p>
+泥臭い説明
+</p>
+
+<p>
+クロージャーオブジェクトのoperator ()をテンプレートにする
+</p>
+</section>
+
+<section>
+<h3>使い方</h3>
+
+<p>
+仮引数の型名としてautoを書く
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+int main()
+{
+    auto print =  []( auto x ) { std::cout &lt;&lt; x ; } ;
+
+    print( 0 ) ; // int
+    print( 0.0 ) ; // double
+    print( "hello" ) ; // char const *
+}
+</code></pre>
+
+<p>
+原理はテンプレート
+</p>
+
+</section>
+
+<section>
+<h3>何故必要なのか？</h3>
+<p>
+以下のPrintに与えるテンプレート実引数を考える
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+template < typename Print >
+void poly( Print print )
+{
+    print( 0 ) ; // int
+    print( 0.0 ) ; // double
+    print( "hello" ) ; // char const *
+}
+</code></pre>
+
+<p>
+異なる型を受け取る必要がある
+</p>
+
+<p>
+関数ポインターやlambda式は使えない
+</p>
+</section>
+
+<section>
+<h3>関数オブジェクト</h3>
+
+<p>
+operator()がメンバーテンプレートな関数オブジェクトならば使える
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct Printer
+{
+    template &lt; typename T &gt;
+    void operator () ( T const &amp; value ) const
+    {
+        std::cout &lt;&lt; value ;
+    }
+} ;
+
+void f()
+{
+    poly( Printer() ) ;
+}
+</code><pre>
+</section>
+
+<section>
+<h3>関数オブジェクトに劣るlambda式</h3>
+
+<p>
+lambda式は関数オブジェクトを楽に書くためにある
+</p>
+
+<p>
+関数オブジェクトに機能で劣るとはどういうことだ
+</p>
+
+<p>
+lambda式にもテンプレートをよこせ
+</p>
+</section>
+
+<section>
+
+<section>
+<h3>ジェネリックlambda式</h3>
+<p>
+関数オブジェクトの表現力をlambda式に与える
+</p>
+
+<p>
+クロージャーオブジェクトのoperator ()をメンバーテンプレートにできる
+</p>
+
+<p>
+lambda式の引数の型の引数化
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+void f()
+{
+    poly( []( auto const &amp; value ) { std::cout &lt;&lt; value ;  } ) ;
+}
+</code></pre>
+</section>
+
+<section>
+<h3>クロージャーオブジェクト</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct closure_object
+{
+    template &lt; typename T &gt;
+    void operator () ( T const &amp; value ) const
+    {
+        std::cout &lt;&lt; value ;
+    }
+} ;
+</code><pre>
+</section>
+
+</section>
+
+<section id="generalized-lambda-capture">
+<h1>汎用lamdaキャプチャー</h1>
+
+<blockquote>
+<p>
+御臺親子を出し参らせ幸の管笠荷と。<br />
+細引かなぐりふた押明。<br />
+荷底に二人を入参らせ。<br />
+旅の用意の風呂敷包。
+</p>
+
+<p>
+義経千本桜
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>汎用lambdaキャプチャーとは？</h3>
+
+<p>
+lambdaキャプチャーに任意の初期化子を書く機能
+</p>
+
+<p>
+原理はクロージャーオブジェクトのデータメンバーへの初期化子
+</p>
+
+<p>
+名前通り、汎用的に使えるキャプチャー
+</p>
+
+</section>
+
+<section>
+<h3>使い方</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+int main()
+{
+    int x = 0 ;
+    [ x = x ](){ } ; // xにxとしてコピー初期化でコピーキャプチャ
+    [ &amp;x = x](){ } ; // xをxとしてコピー初期化でリファレンスキャプチャ
+    [ y = x ](){ } ; // xをyとしてコピー初期化でコピーキャプチャ
+    [ x = x + 1 ](){ } ; // 任意の初期化式が使える 
+    [ x{x} ](){ } ; // リスト初期化子も使える
+}
+</code></pre>
+</section>
+
+<section>
+<h3>何故必要なのか？</h3>
+
+<p>
+C++11のlambdaキャプチャーには問題が二つ
+</p>
+
+<ol>
+<li>非staticデータメンバーがコピーキャプチャできない</li>
+<li>ムーブキャプチャーが存在しない</li>
+</ol>
+</section>
+
+<!-- vertical slide -->
+<section>
+
+<section>
+<h3>非staticデータメンバー</h3>
+
+<p>
+C++11では、非staticデータメンバーはコピーキャプチャできない
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct S
+{
+    int data = 0 ;
+    auto f() const
+    { return [=](){ return data ; } ; }
+} ;
+
+int main()
+{
+    std::function&lt; int() &gt; func ;
+    {
+        S s ;
+        func = s.f() ;
+    }
+    func() ; // 実行時エラー
+}
+</code></pre>
+
+</section>
+
+<section >
+<h3>実際の挙動</h3>
+
+<p>
+C++11では、非staticデータメンバーはコピーキャプチャできない
+</p>
+
+<pre><code data-trim="data-trim">
+struct S
+{
+    int data = 0 ;
+    auto f() const
+    { return [this](){ return this-&gt;data ; } ; }
+} ; // thisはポインター
+
+int main()
+{
+    std::function&lt; int() &gt; func ;
+    {
+        S s ;
+        func = s.f() ;
+    } // sの寿命は尽きている
+    func() ; // 実行時エラー
+}
+</code></pre>
+
+</section>
+
+
+<section>
+<h3>生成されるクロージャーオブジェクト</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct closure_object
+{
+    S * const this_ptr ;
+    closure_object( S * const this_ptr )
+        : this_ptr( this_ptr ) { }
+
+    auto operator () const
+    { return this_ptr-&gt;data ; }
+} ;
+</code></pre>
+</section>
+
+
+</section>
+<!-- vertical slide -->
+
+
+<section>
+<h3>C++11のラムダキャプチャー</h3>
+
+<p>
+非staticデータメンバーは、thisポインターを経由してアクセスされる
+</p>
+
+<p>
+本質的には、リファレンスキャプチャー
+</p>
+</section>
+
+<section>
+<h3>ムーブキャプチャー</h3>
+
+<p>
+C++にムーブキャプチャーは存在しない
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+#include &lt;memory&gt;
+
+auto f( )
+{
+    std::unique_ptr&lt;int&gt; ptr = std::make_unique&lt;int&gt;(0) ;
+    return [ p ]() { return *p ; } ; // エラー
+}
+</code></pre>
+</section>
+
+<section>
+<h3>批難殺到</h3>
+
+<p>
+まだC++11がC++0xと呼ばれていた時代、lambda式には批難が殺到した
+</p>
+
+<p>
+C++WG日本支部もNBコメントを送った
+</p>
+
+<p>
+しかし、ふさわしい文法を検討する時間がないため、解決は見送られた
+</p>
+</section>
+
+<section>
+<h3>クロージャーオブジェクトとはなにか</h3>
+
+<p>
+lambda式は、クロージャーオブジェクトを生成する
+</p>
+
+<p>
+このlambda式に対応するクロージャーオブジェクトは？
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+void f()
+{
+    int value = 0 ;
+    auto f = [value]() { return value ; } ;
+    int result = f() ;
+}
+</code></pre>
+
+</section>
+
+<section>
+<h3>クロージャーオブジェクトの詳細</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+class closure_object
+{
+    int value ;
+public :
+    closure_object( int value ) : value(value) { }
+    auto operator () const
+    { return value ; }
+}
+
+void f()
+{
+    int value = 0 ;
+    closure_object f(value) ;
+    int result = f() ;
+}
+</code></pre>
+</section>
+
+<section>
+<h3>キャプチャの本質</h3>
+
+<p>
+キャプチャとは、クロージャーオブジェクトの非staticデータメンバー
+</p>
+
+<p>
+では、データメンバーの初期化方法を指定する文法があればよい
+</p>
+
+<p>
+その文法が、汎用lambdaキャプチャー
+</p>
+</section>
+
+<section>
+<h3>非staticデータメンバーのコピーキャプチャー</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct S
+{
+    int data = 0 ;
+    auto f() const
+    { return [ data = data ](){ return data ; } ; }
+} ;
+
+int main()
+{
+    std::function&lt; int() &gt; func ;
+    {
+        S s ;
+        func = s.f() ;
+    }
+    func() ; // OK
+}
+
+</code></pre>
+</section>
+
+<section>
+<h3>ムーブ風コピーキャプチャー</h3>
+
+<p>
+ムーブキャプチャーは存在しない
+</p>
+
+<p>
+存在する必要がない
+</p>
+
+<p>
+汎用lambdaキャプチャーは汎用的に使える
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+#include &lt;memory&gt;
+
+auto f( )
+{
+    std::unique_ptr&lt;int&gt; ptr = std::make_unique&lt;int&gt;(0) ;
+    return [ p = std::move(p) ]() { return *p ; } ; // OK
+}
+</code></pre>
+</section>
+
+<section>
+<h3>その他</h3>
+
+<p>
+キャプチャする変数の名前を変えられる
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+void f()
+{
+    int very_long_name = 0 ;
+    [ s = very_long_name ]() { } ;
+}
+</code></pre>
+</section>
+
+
+<section id="constexpr">
+<h1>constexpr関数の制限緩和</h1>
+
+<blockquote>
+
+<p>
+constexprは市民の義務だからな
+</p>
+
+<p>
+<a href="https://twitter.com/bolero_MURAKAMI/status/388125919161745409">狂える中３女子ボレロ村上／陶芸C++er</a>
+</p>
+</blockquote>
+
+<blockquote>
+<p>
+世の中にはconstexprなコードと、<br />
+まだconstexprでないコードしか存在しない。
+</p>
+
+<p>
+<a href="https://twitter.com/bolero_MURAKAMI/status/376684003664748545">狂える中３女子ボレロ村上／陶芸C++er</a>
+</p>
+</blockquote>
+
+<blockquote>
+<pre><code data-trim="data-trim" class="cpp">
+i  = 0x5f3759df - ( i &gt;&gt; 1 ); // what the fuck?
+</code></pre>
+
+<p>
+<a href="ftp://ftp.idsoftware.com/idstuff/source/quake3-1.32b-source.zip">Quake III Arena: quake3-1.32b/code/game/q_math.c 561行</a>
+</p>
+</blockquote>
+</section>
+
+<section>
+<h3>constexpr関数の制限緩和とは？</h3>
+
+<p>
+constexpr関数の制限を大幅に緩和する変更
+</p>
+</section>
+
+<section>
+<h3>C++11のconstexpr関数</h3>
+
+<p>
+制限が多い
+</p>
+
+<ul>
+<li>
+constexpr関数の本体は、実質return文ひとつ
+</li>
+
+<li>
+条件分岐は条件演算子( expr ? expr : expr )
+</li>
+
+<li>
+ループは再帰
+</li>
+
+<li>
+変更したい変数は引数に追い出す
+</li>
+</ul>
+
+
+
+</section>
+
+<section>
+<h3>C++14のconstexpr関数</h3>
+
+<p>
+制限を緩和
+</p>
+<ul>
+<li>ローカル変数の宣言</li>
+<li>ローカル変数の変更</li>
+<li>条件文(if, switch)</li>
+<li>繰り返し文(for, while, do-while)</li>
+</ul>
+</section>
+
+<section>
+<h3>sqrtをconstexpr関数で書け</h3>
+
+<p>
+数値Sの平方根の計算方法
+</p>
+
+<p>
+Babylonian method
+</p>
+
+<ol>
+<li>適当な初期値X<sub>0</sub>を取る（平方根に近い値が望ましい）</li>
+<li>X<sub>n+1</sub>をX<sub>n</sub>とS/X<sub>n</sub>の平均とする（算術平均を用いてよい）</li>
+<li>十分な精度が得られるまで、ステップ2を繰り返す</li>
+</ol>
+
+</section>
+
+<section>
+<h3>実行時関数によるsqrt</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T &gt;
+T sqrt( T s )
+{
+    T x = s / 2.0 ; // 適当な初期値
+    T prev = 0.0 ;
+
+    while ( x != prev ) // 十分な精度が得られるまで繰り返す
+    {
+        prev = x ;
+        x = (x + s / x ) / 2.0 ; // ステップ2
+    }
+
+    return x ;
+}
+</code></pre>
+</section>
+
+
+<section>
+<h3>C++11のconstexpr関数によるsqrt</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T &gt;
+constexpr T sqrt_aux( T s, T x, T prev )
+{
+    return x != prev ? sqrt_aux( s, ( x + s / x ) / 2.0, x ) : x ;
+}
+
+template &lt; typename T &gt;
+constexpr T sqrt( T s )
+{
+    return sqrt_aux( s, s/2.0, s ) ;
+}
+</code></pre>
+
+</section>
+
+<section>
+<h3>C++14のconstexpr関数によるsqrt</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+template &lt; typename T &gt;
+constexpr T sqrt( T s )
+{
+    T x = s / 2.0 ; // 適当な初期値
+    T prev = 0.0 ;
+
+    while ( x != prev ) // 十分な精度が得られるまで繰り返す
+    {
+        prev = x ;
+        x = (x + s / x ) / 2.0 ; // ステップ2
+    }
+
+    return x ;
+}
+</code></pre>
+</section>
+
+<section>
+<h1>宣伝</h1>
+
+<p>
+C++11の参考書をGitHubで公開中
+</p>
+
+<p>
+GitHub: <a href="https://github.com/EzoeRyou/cpp-book">EzoeRyou/cpp-book</a>
+</p>
+
+<p>
+GitHub Pages: <a href="http://ezoeryou.github.io/cpp-book/C++11-Syntax-and-Feature.xhtml">C++11の文法と機能</a>
+</p>
+</section>
+
+<section>
+<h2>参考文献</h2>
+
+<dt>2013-10-13時点でのドラフト規格</dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3797.pdf">N3797</a>
+</dd>
+
+<dl>
+<dt><a href="#/binary-literal">二進数リテラル</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3472">N3472</a>
+</dd>
+
+<dt><a href="#/digit-separator">数値区切り</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3499.html">N3499</a>, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3781.html">N3781</a>
+</dd>
+
+<dt><a href="#/runtime-sized-array">実行時サイズ配列</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3639">N3639</a>, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3662">N3662</a>, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3820.html">N3820</a> 
+</dd>
+<dt><a href="#/deprecated">[[deprecated]]</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3760.html">N3760</a>
+</dd>
+
+<dt><a href="#/return-type-deduction">戻り値の型推定</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3638">N3638</a>
+</dd>
+
+<dt><a href="#/variable-template">変数テンプレート</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3651">N3638</a>
+</dd>
+
+<dt><a href="#/generic-lambda">ジェネリックlambda式</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3649">N3649</a>
+</dd>
+
+<dt><a href="#/generalized-lambda-capture">汎用lambdaキャプチャー</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3648">N3648</a>, <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3610.html">N3610</a>
+</dd>
+
+<dt><a href="#/constexpr">constexpr関数の制限緩和</a></dt>
+<dd>
+<a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2013/n3652">N3652</a>
+</dd>
+</dl>
+</section>
+
+</div> <!-- class="slides" -->
+</div> <!-- class="reveal" -->
+
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // fire up the Reveal.js 
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+
+        width : "90%",
+        height : "90%",
+
+        theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+        transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+            { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+            { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+            { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+        ]
+    });
+
+</script>
+
+
+</body>
+
+</html>
