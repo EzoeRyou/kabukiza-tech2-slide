@@ -1281,7 +1281,7 @@ C++にムーブキャプチャーは存在しない
 
 auto f( )
 {
-    std::unique_ptr&lt;int&gt; ptr = std::make_unique&lt;int&gt;(0) ;
+    std::unique_ptr&lt;int&gt; p = std::make_unique&lt;int&gt;(0) ;
     return [ p ]() { return *p ; } ; // エラー
 }
 </code></pre>
@@ -1407,7 +1407,7 @@ int main()
 
 auto f( )
 {
-    std::unique_ptr&lt;int&gt; ptr = std::make_unique&lt;int&gt;(0) ;
+    std::unique_ptr&lt;int&gt; p = std::make_unique&lt;int&gt;(0) ;
     return [ p = std::move(p) ]() { return *p ; } ; // OK
 }
 </code></pre>
