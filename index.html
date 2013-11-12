@@ -1108,7 +1108,44 @@ struct closure_object
         std::cout &lt;&lt; value ;
     }
 } ;
-</code><pre>
+</code></pre>
+</section>
+
+</section>
+
+<section>
+
+<section>
+<h3>パラメーターパック</h3>
+
+<p>
+Variadic Templatesのパラメーターパックも使える
+</p>
+
+<pre><code data-trim="data-trim" class="cpp">
+int main()
+{
+    auto f = []( auto ... args ) { } ;
+
+    f() ;
+    f( 0 ) ;
+    f( 1, 2, 3, 4, 5 ) ;
+    f( 3.14, "hello", nullptr ) ;
+}
+</code></pre>
+</section>
+
+<section>
+<h3>クロージャーオブジェクト</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
+struct closure_object
+{
+    template &lt; typename ... Types &gt;
+    void operator ()( Types ... args )
+    { }
+} ;
+</code></pre>
 </section>
 
 </section>
