@@ -656,7 +656,8 @@ auto ackermann( unsigned m, unsigned n )
     else if ( n == 0u )
         return ackermann( m - 1u, 1u ) ;
     else
-        return ackermann( m - 1u, ackermann( m, n - 1u ) ) ;
+        return ackermann( m - 1u,
+                          ackermann( m, n - 1u ) ) ;
 }
 </code></pre>
 </section>
@@ -1222,18 +1223,9 @@ struct S
 {
     int data = 0 ;
     auto f() const
+    // 危険
     { return [=](){ return data ; } ; }
 } ;
-
-int main()
-{
-    std::function&lt; int() &gt; func ;
-    {
-        S s ;
-        func = s.f() ;
-    }
-    func() ; // 実行時エラー
-}
 </code></pre>
 
 </section>
@@ -1245,25 +1237,32 @@ int main()
 C++11では、非staticデータメンバーはコピーキャプチャできない
 </p>
 
-<pre><code data-trim="data-trim">
+<pre><code data-trim="data-trim" class="cpp">
 struct S
 {
     int data = 0 ;
     auto f() const
+    // 危険
     { return [this](){ return this-&gt;data ; } ; }
-} ; // thisはポインター
+} ;
+</code></pre>
 
+</section>
+
+<section>
+<h3>問題のある使い方</h3>
+
+<pre><code data-trim="data-trim" class="cpp">
 int main()
 {
-    std::function&lt; int() &gt; func ;
+    std::function&lt; int (void) &gt; func ;
     {
         S s ;
         func = s.f() ;
     } // sの寿命は尽きている
-    func() ; // 実行時エラー
+    func() ; // エラー
 }
 </code></pre>
-
 </section>
 
 
@@ -1367,14 +1366,7 @@ public :
     closure_object( int value ) : value(value) { }
     auto operator () const
     { return value ; }
-}
-
-void f()
-{
-    int value = 0 ;
-    closure_object f(value) ;
-    int result = f() ;
-}
+} ;
 </code></pre>
 </section>
 
@@ -1402,19 +1394,9 @@ struct S
 {
     int data = 0 ;
     auto f() const
+    // コピーキャプチャ
     { return [ data = data ](){ return data ; } ; }
 } ;
-
-int main()
-{
-    std::function&lt; int() &gt; func ;
-    {
-        S s ;
-        func = s.f() ;
-    }
-    func() ; // OK
-}
-
 </code></pre>
 </section>
 
@@ -1423,10 +1405,6 @@ int main()
 
 <p>
 ムーブキャプチャーは存在しない
-</p>
-
-<p>
-存在する必要がない
 </p>
 
 <p>
@@ -1567,22 +1545,24 @@ Babylonian method
 
 </section>
 
+
 <section>
-<h3>実行時関数によるsqrt</h3>
+
+<h3>C++11の実行時関数による実装</h3>
 
 <pre><code data-trim="data-trim" class="cpp">
+
 template &lt; typename T &gt;
 T sqrt( T s )
 {
     T x = s / 2.0 ; // 適当な初期値
     T prev = 0.0 ;
 
-    while ( x != prev ) // 十分な精度が得られるまで繰り返す
-    {
+    while ( x != prev )
+    { // 十分な精度が得られるまで繰り返す
         prev = x ;
         x = (x + s / x ) / 2.0 ; // ステップ2
     }
-
     return x ;
 }
 </code></pre>
@@ -1596,14 +1576,13 @@ T sqrt( T s )
 template &lt; typename T &gt;
 constexpr T sqrt_aux( T s, T x, T prev )
 {
-    return x != prev ? sqrt_aux( s, ( x + s / x ) / 2.0, x ) : x ;
+    return x != prev ? 
+        sqrt_aux( s, ( x + s / x ) / 2.0, x ) : x ;
 }
 
 template &lt; typename T &gt;
 constexpr T sqrt( T s )
-{
-    return sqrt_aux( s, s/2.0, s ) ;
-}
+{ return sqrt_aux( s, s/2.0, s ) ; }
 </code></pre>
 
 </section>
@@ -1618,12 +1597,11 @@ constexpr T sqrt( T s )
     T x = s / 2.0 ; // 適当な初期値
     T prev = 0.0 ;
 
-    while ( x != prev ) // 十分な精度が得られるまで繰り返す
-    {
+    while ( x != prev )
+    { // 十分な精度が得られるまで繰り返す
         prev = x ;
         x = (x + s / x ) / 2.0 ; // ステップ2
     }
-
     return x ;
 }
 </code></pre>
