@@ -1084,7 +1084,8 @@ lambda式の引数の型の引数化
 <pre><code data-trim="data-trim" class="cpp">
 void f()
 {
-    poly( []( auto const &amp; value ) { std::cout &lt;&lt; value ;  } ) ;
+    poly(   []( auto const &amp; value )
+            { std::cout &lt;&lt; value ;  } ) ;
 }
 </code></pre>
 </section>
