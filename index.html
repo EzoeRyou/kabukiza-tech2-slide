@@ -1044,15 +1044,8 @@ struct Printer
 {
     template &lt; typename T &gt;
     void operator () ( T const &amp; value ) const
-    {
-        std::cout &lt;&lt; value ;
-    }
+    { std::cout &lt;&lt; value ; }
 } ;
-
-void f()
-{
-    poly( Printer() ) ;
-}
 </code><pre>
 </section>
 
